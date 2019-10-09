@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsl:stylesheet xml:id="section" version="5.0"
+        xmlns:book="http://docbook.org/ns/docbook"
+        xmlns:xi="http://www.w3.org/2001/XInclude"
+        xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        xmlns:dion="http://avoceteditors.com/xml/dion">
+
+<!-- ###################################### SECTION HEADINGS ############################## -->
+<xsl:template match="book:part">
+\part*{<xsl:value-of select="book:info/book:title|book:title"/>}
+
+<xsl:apply-templates/>
+
+</xsl:template>
+
+<xsl:template match="book:lexicon">
+\chapter*{<xsl:value-of select="book:info/book:title|book:title"/>}
+
+<xsl:apply-templates select="book:para"/>
+
+\begin{multicols}{<xsl:value-of select="@cols"/>}
+<xsl:apply-templates select="book:section">
+
+<xsl:sort select="book:title"/>
+
+</xsl:apply-templates>
+\end{multicols}
+
+</xsl:template>
+
+
+<xsl:template match="book:lexicon//book:section">
+<xsl:variable name="title-count"><xsl:value-of select="count(book:title|book:info/book:title)"/></xsl:variable>
+<xsl:if test="$title-count > 0">\begin{center}\textbf{\footnotesize <xsl:value-of select="book:title|book:info/book:title"/>}\end{center}</xsl:if>
+
+<xsl:apply-templates select="dion:entry">
+<xsl:sort select="book:title[@dion:sort]"/>
+</xsl:apply-templates>
+
+</xsl:template>
+
+<xsl:template match="dion:entry">
+<xsl:apply-templates select="book:title|dion:definition|book:indexterm"/>
+</xsl:template>
+
+
+<xsl:template match="book:book/book:appendix">
+\part*{<xsl:value-of select="title"/>}
+
+<xsl:apply-templates/>
+
+</xsl:template>
+
+<xsl:template match="book:part/book:appendix">
+\chapter*{<xsl:value-of select="book:title|book:info/book:title"/>}
+
+<xsl:apply-templates/>
+
+</xsl:template>
+
+
+<xsl:template match="book:chapter">
+\chapter*{<xsl:value-of select="book:info/book:title|book:title"/>}
+
+<xsl:apply-templates/>
+
+</xsl:template>
+
+
+<xsl:template match="book:chapter/book:section">
+\section*{<xsl:value-of select="book:info/book:title|book:title"/>}
+
+<xsl:apply-templates/>
+
+</xsl:template>
+
+<xsl:template match="book:chapter/book:section/book:section">
+\subsection*{<xsl:value-of select="book:info/book:title|book:title"/>}
+
+<xsl:apply-templates/>
+
+</xsl:template>
+
+
+<xsl:template match="book:chapter/book:section/book:section/book:section">
+\subsubsection*{<xsl:value-of select="book:info/book:title|book:title"/>}
+
+<xsl:apply-templates/>
+
+</xsl:template>
+
+<xsl:template match="book:chapter/book:section/book:section/book:section/book:section">
+\paragraph*{<xsl:value-of select="book:info/book:title|book:title"/>}
+
+<xsl:apply-templates/>
+
+</xsl:template>
+
+
+<xsl:template match="book:section">
+\subparagraph*{<xsl:value-of select="book:info/book:title|book:title"/>}
+
+<xsl:apply-templates/>
+
+</xsl:template>
+
+<xsl:template match="book:section/book:para[preceding::book:imagedata][1]">
+
+\noindent <xsl:apply-templates/> 
+
+</xsl:template>
+
+
+<xsl:template match="book:para[@dion:indent='no']">
+
+\noindent <xsl:apply-templates/> 
+
+</xsl:template>
+
+<xsl:template match="book:para[preceding::book:itemizelist][1]">
+
+\noindent <xsl:apply-templates/> 
+
+</xsl:template>
+
+
+<xsl:template match="book:para">
+
+<xsl:apply-templates/> 
+
+</xsl:template>
+
+<!--<xsl:template match="book:para//text()"><xsl:apply-templates select="normalize-space()"/></xsl:template>-->
+
+
+</xsl:stylesheet>

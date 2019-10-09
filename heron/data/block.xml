@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsl:stylesheet xml:id="block" version="5.0"
+        xmlns:book="http://docbook.org/ns/docbook"
+        xmlns:xi="http://www.w3.org/2001/XInclude"
+        xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        xmlns:dion="http://avoceteditors.com/xml/dion">
+
+
+<xsl:template match="book:index">
+\printindex
+</xsl:template>
+
+<xsl:template match="dion:titles">
+
+\titleblock{<xsl:value-of select="@all"/>}
+
+</xsl:template>
+
+</xsl:stylesheet>
+
