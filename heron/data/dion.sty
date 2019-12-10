@@ -77,6 +77,64 @@
 % Default Commands
 \newcommand{\titleblock}[1]{}
 
+% Title Setters
+\newcommand{\diontitle}{}
+\newcommand{\setTitle}[1]{
+    \renewcommand{\diontitle}{#1}
+}
+
+\newcommand{\dionsubtitle}{}
+\newcommand{\setSubtitle}[1]{
+    \renewcommand{\dionsubtitle}{#1}
+}
+
+% Author
+\newcommand{\authorFull}{}
+\newcommand{\authorSur}{}
+\newcommand{\setAuthor}[1]{
+    \renewcommand{\authorFull}{#1}
+}
+\newcommand{\setSurname}[1]{
+    \renewcommand{\authorSur}{#1}
+}
+
+% Publisher
+\newcommand{\publisherName}{}
+\newcommand{\pubcities}{}
+\newcommand{\setPublisher}[1]{
+    \renewcommand{\publisherName}{#1}
+}
+
+\newcommand{\setPubcities}[1]{
+    \renewcommand{\pubcities}{#1}
+}
+
+% Title Page
+\newcommand{\diontitlepage}{
+    \begin{titlepage}
+    \begin{center}
+
+    \vspace{2in}
+    \bfseries
+    \Large\MakeUppercase{\diontitle}
+
+    \vspace{1in}
+    \large\emph{\dionsubtitle}
+
+    \vspace{4.4in}
+    \authorFull
+
+    \vspace{0.5in}
+    \rule{0.75\textwidth}{0.4pt}
+
+    \normalsize\emph{\publisherName}
+
+    \small \pubcities
+
+    \end{center}
+    \end{titlepage}
+}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Configuration
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -88,22 +146,37 @@
 % Formatting for Books
 \DeclareOption{book}{
     \geometry{asymmetric, margin=1in}
+
+    % Headers and Footers
+    \pagestyle{fancy}
+    \fancyhead[RO]{\footnotesize\textsc{\authorSur}\normalsize}
+    \fancyhead[LE]{\footnotesize\textsc{\diontitle}\normalsize}
+    \fancyhead[LO, RE, CO, CE]{}
+
+    \fancyfoot[LE, RO]{\footnotesize\thepage\normalsize}
+    \fancyfoot[LO, RE, CO, CE]{}
 }
 % Formatting for Novel Chapters
 \DeclareOption{chapter}{
     \geometry{margin=1in}
+
+    % Header Footer
+    \pagestyle{fancy}
+    \fancyhead[RO, RE]{\footnotesize\authorSur - \textsc{\diontitle} \normalsize}
+    \fancyhead[LO, LE, CO, CE]{}
+
+    \fancyfoot[RE, RO]{\footnotesize\thepage\normalsize}
+    \fancyfoot[LO, LE, CO, CE]{}
 }
 % Formatting for Novels
 \DeclareOption{hidetitles}{
     \titleformat{\part}[block]{\Huge\bfseries\center\MakeUppercase{#1}}{}{}{}
     \titleformat{\chapter}[block]{}{}{}{}[\addcontentsline{toc}{chapter}{ #1}]
-    \titleformat{\section}[block]{}{}{}{}
+    \titleformat{\section}[block]{}{}{}{}[\mbox{}]
     \titleformat{\subsection}[block]{}{}{}{}
     \titleformat{\subsubsection}[block]{}{}{}{}
     \titleformat{\paragraph}[block]{}{}{}{}
-    \titleformat{\subparagraph}[block]{}{}{}{}
-
-    \renewcommand{\titleblock}[1]{
+    \titleformat{\subparagraph}[block]{}{}{}{}    \renewcommand{\titleblock}[1]{
         \footnotesize\textsc{#1}
 
         \sectionline\normalsize}
@@ -135,5 +208,6 @@
 \ProcessOptions\relax
 
 \linespread{1.25}
+
 
 \endinput

@@ -4,7 +4,22 @@
 <xsl:template match="/book:book[@role='novel']">\documentclass[<xsl:value-of select="@dion:font"/>, <xsl:value-of select="@dion:paper"/>, <xsl:value-of select="@dion:sides"/>]{book}
 \usepackage[book, hidetitles, gothrubric]{dion} 
 
+\setTitle{<xsl:value-of select="book:title|book:info/book:title"/>}
+\setAuthor{<xsl:value-of select="book:info/book:author"/>}
+
+\setSurname{<xsl:value-of select="book:info/book:author/book:personname/book:surname"/>}
+
+\setSubtitle{<xsl:value-of select="book:info/book:subtitle"/>}
+
+\setPublisher{<xsl:value-of select="book:info/book:publisher/book:publishername"/>}
+
+\setPubcities{<xsl:for-each select="book:info/book:publisher//book:city"><xsl:value-of select="."/><xsl:if test="position() != last()"> \tiny + \normalsize </xsl:if></xsl:for-each>}
+
 \begin{document}
+
+\diontitlepage
+
+\tableofcontents
 
 <xsl:apply-templates/>
 
@@ -205,11 +220,12 @@
 
 <!-- Inline -->
 <xsl:template match="dion:lett[@rubric]">\lettrine{<xsl:value-of select="@rubric"/>}{<xsl:apply-templates/>}</xsl:template>
-<xsl:template match="dion:lett">\lettrine[lines=0]{}{<xsl:apply-templates/>}</xsl:template>
+
+<xsl:template match="dion:lett">\lettrine[lines=1]{}{<xsl:apply-templates/>}</xsl:template>
 
 <xsl:template match="dion:entry/book:title">\par\noindent\textbf{\scriptsize <xsl:apply-templates/>} \textsc{\scriptsize <xsl:value-of select="../@dion:lex"/>} \textit{\scriptsize <xsl:value-of select="../@gramm"/>} </xsl:template>
 
-<xsl:template match="book:title"/>
+<xsl:template match="book:title|book:para/dion:title"/>
 
 
 <xsl:template match="dion:definition">\tiny\hspace{2pt} <xsl:value-of select="@counter"/> \scriptsize\hspace{1pt} <xsl:apply-templates/> </xsl:template> 
