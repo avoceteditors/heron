@@ -2,6 +2,6 @@
 Heron
 #########
 
-An XML document processor for writer of fiction, web, and nonfiction.  Currently in development, not recommended for production use.  
+An XML document processor for writers of fiction, and nonfiction, and web publications.  Currently in development, not recommended for production use.  
 
 
