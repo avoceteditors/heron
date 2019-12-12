@@ -28,7 +28,7 @@ setup(
     packages=packages,
     package_dir=package_dirs,
     scripts=scripts,
-    package_data={'heron':['data/Makefile', 'data/*.xsl', 'data/*.sty']},
+    package_data={'heron':['data/Makefile', 'data/*.xsl', 'data/*.sty', 'xslt/*.xsl', 'tex/*']},
 )
         
 

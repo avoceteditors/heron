@@ -1,5 +1,5 @@
 
-HRN=heron2
+HRN=heron
 
 all: compile-xslt install
 

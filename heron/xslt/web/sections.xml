@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsl:stylesheet xml:id="sections" version="5.0"
+        xmlns:book="http://docbook.org/ns/docbook"
+        xmlns:xi="http://www.w3.org/2001/XInclude"
+        xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        xmlns:dion="http://avoceteditors.com/xml/dion">
+
+<!-- Configures the H2 -->
+<xsl:template match="/*/book:part|/*/book:chapter|/*/book:section|/*/book:article">
+<div>
+<h2><xsl:value-of select="book:info/book:title"/></h2>
+<xsl:apply-templates/>
+</div>
+</xsl:template>
+
+</xsl:stylesheet>
