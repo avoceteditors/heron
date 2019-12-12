@@ -53,6 +53,8 @@
 \RequirePackage{textgreek}
 \RequirePackage{tipa}
 \RequirePackage[explicit, noindentafter]{titlesec}
+\RequirePackage{pgfplots}
+\RequirePackage{numprint}
 
 \RequirePackage{Typocaps}
 \RequirePackage{Elzevier}
@@ -73,6 +75,9 @@
     \end{center}
 
 }
+
+% Statistics
+
 
 % Default Commands
 \newcommand{\titleblock}[1]{}
@@ -139,6 +144,9 @@
 % Configuration
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Separator
+\npthousandsep{,}
+
 % Set Default Fonts
 \renewcommand{\familydefault}{\rmdefault}
 
@@ -162,11 +170,14 @@
 
     % Header Footer
     \pagestyle{fancy}
-    \fancyhead[RO, RE]{\footnotesize\authorSur - \textsc{\diontitle} \normalsize}
-    \fancyhead[LO, LE, CO, CE]{}
+    \fancyhead[RO, RE]{\footnotesize \textit{\diontitle} \normalsize}
+    \fancyhead[LO, LE]{\footnotesize \authorSur\normalsize}
+    \fancyhead[CO, CE]{}
 
     \fancyfoot[RE, RO]{\footnotesize\thepage\normalsize}
     \fancyfoot[LO, LE, CO, CE]{}
+
+    \let\cleardoublepage=\clearpage
 }
 % Formatting for Novels
 \DeclareOption{hidetitles}{

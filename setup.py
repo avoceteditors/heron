@@ -24,7 +24,7 @@ for i in scripts_dir.glob("*"):
 # Initialize Library
 setup(
     name="heron",
-    version="2019.3",
+    version="2019.4",
     packages=packages,
     package_dir=package_dirs,
     scripts=scripts,

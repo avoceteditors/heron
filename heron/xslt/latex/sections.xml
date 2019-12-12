@@ -15,17 +15,11 @@
 </xsl:template>
 
 <!-- Chapter -->
-<xsl:template match="book:chapter[@role='novel']">
-\chapter*{<xsl:value-of select="book:info/book:title|book:title"/>}
-
-\titleblock{<xsl:value-of select="book:info/dion:titleblock"/>}
-
-<xsl:apply-templates/>
-
-</xsl:template>
-
 <xsl:template match="book:chapter">
 \chapter*{<xsl:value-of select="book:info/book:title|book:title"/>}
+<xsl:if test="@role='novel'">
+\titleblock{<xsl:value-of select="book:info/dion:titleblock"/>}
+</xsl:if>
 
 <xsl:apply-templates/>
 
