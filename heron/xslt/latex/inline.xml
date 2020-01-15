@@ -16,7 +16,7 @@
 <xsl:template match="book:emphasis">\emph{<xsl:apply-templates/>}</xsl:template>
 
 <!-- Lettrine -->
-<xsl:template match="dion:lett">\lettrine{<xsl:value-of select="@rubric"/>}{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="dion:lett"><xsl:choose><xsl:when test="@format">\lettrine[<xsl:value-of select="@format"/>]{}{<xsl:apply-templates/>}</xsl:when><xsl:otherwise>\lettrine{<xsl:value-of select="@rubric"/>}{<xsl:apply-templates/>}</xsl:otherwise></xsl:choose></xsl:template>
 
 
 </xsl:stylesheet>

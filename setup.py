@@ -6,7 +6,8 @@ import re
 packages = [
     "heron",
     "heron.build",
-    "heron.build.xml"
+    "heron.build.xml",
+    "heron.stats"
 ]
 package_dirs = {}
 

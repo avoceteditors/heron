@@ -55,13 +55,23 @@
 \RequirePackage[explicit, noindentafter]{titlesec}
 \RequirePackage{pgfplots}
 \RequirePackage{numprint}
-
+\RequirePackage{tabulary}
+\RequirePackage{yfonts}
+\RequirePackage{epigraph}
 \RequirePackage{Typocaps}
 \RequirePackage{Elzevier}
 \RequirePackage{Zallman}
 \RequirePackage{GotIn}
 \RequirePackage{Acorn}
+\RequirePackage{mdframed}
+\RequirePackage{tocloft}
+\RequirePackage{longtable}
+\RequirePackage{calc}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ToC Configuration
+\renewcommand*\contentsname{Summary}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section Line
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -77,6 +87,17 @@
 }
 
 % Statistics
+\newcommand{\docStats}[6]{
+    \begin{tabulary}{\textwidth}{lrrr}
+        \hline
+                     & \emph{Chapter} & \emph{Book} \\
+        \hline
+        \emph{Lines} & \numprint{#1} & \numprint{#2} \\
+        \emph{Words} & \numprint{#3} & \numprint{#4} \\
+        \emph{Chars} & \numprint{#5} & \numprint{#6} \\
+        \hline
+    \end{tabulary}
+}
 
 
 % Default Commands
@@ -150,7 +171,6 @@
 % Set Default Fonts
 \renewcommand{\familydefault}{\rmdefault}
 
-
 % Formatting for Books
 \DeclareOption{book}{
     \geometry{asymmetric, margin=1in}
@@ -181,7 +201,8 @@
 }
 % Formatting for Novels
 \DeclareOption{hidetitles}{
-    \titleformat{\part}[block]{\Huge\bfseries\center\MakeUppercase{#1}}{}{}{}
+    \titleformat{\part}[block]{\Huge\center\textsc{#1}}{}{}{}
+
     \titleformat{\chapter}[block]{}{}{}{}[\addcontentsline{toc}{chapter}{ #1}]
     \titleformat{\section}[block]{}{}{}{}[\mbox{}]
     \titleformat{\subsection}[block]{}{}{}{}
@@ -211,6 +232,17 @@
 \DeclareOption{norubric}{}
 \DeclareOption{gothrubric}{
     \renewcommand{\LettrineFontHook}{\Typocapsfamily}
+}
+
+% Todo Block
+\newcommand{\todo}[1]{
+    \begin{mdframed}
+        \tiny
+        \noindent\textbf{TODO ITEM:}
+
+        #1
+        \normalsize
+    \end{mdframed}
 }
 
 

@@ -1,4 +1,4 @@
-<xsl:stylesheet xmlns:book="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dion="http://avoceteditors.com/xml/dion" xml:id="latex" version="1.0" dion:path="heron/xslt/latex" dion:mtime="1576143217.0223749">
+<xsl:stylesheet xmlns:book="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dion="http://avoceteditors.com/xml/dion" xml:id="latex" version="1.0" dion:path="heron/xslt/latex" dion:mtime="1578130494.9331427">
 <xsl:output method="text" omit-xml-declaration="yes" indent="no"/>
 
 
@@ -70,16 +70,33 @@
 \begin{titlepage}
 \hrule
 \begin{flushright}
-\Large\bfseries <xsl:value-of select="book:info/dion:booktitle"/>: \emph{<xsl:value-of select="book:info/book:title|book:title"/>}
+\large\bfseries <xsl:value-of select="book:info/dion:booktitle"/>: \emph{<xsl:value-of select="book:info/book:title|book:title"/>}
 
 \normalsize <xsl:value-of select="book:info//book:author"/>
 
+\end{flushright}
+
+% Abstract
+\hrule
+
+\small
+\begin{center}
+\textbf{ABSTRACT}
+\end{center}
+
+<xsl:apply-templates select="book:info/book:abstract"/>
+
+\vspace{0.15in}
+\normalsize
+
 % Document Statistics
-\vspace{1.75in}
+\hrule
 \begin{center}
 \begin{tikzpicture}
-\begin{axis}[ybar, enlargelimits=0.2, ylabel=Count, xlabel=Chapters, xtick=data,
-    symbolic x coords = { <xsl:value-of select="book:info/dion:stats[@role='book']/@charttitle"/>  },
+\begin{axis}[ybar, enlargelimits=0.2, ylabel=Word Count, xlabel=Chapters, xtick=data,
+    height=0.25\textwidth,
+    width=\textwidth,
+    symbolic x coords = {<xsl:value-of select="book:info/dion:stats[@role='book']/@charttitle"/>  },
    nodes near coords align={vertical}]
 
 \addplot coordinates {
@@ -92,41 +109,36 @@
 \end{tikzpicture}
 \end{center}
 
-\end{flushright}
+\footnotesize
 
-\begin{minipage}{0.45\textwidth}
-\large\bfseries Document Statistics: \normalfont\small
+\begin{center}
+\begin{tabulary}{\textwidth}{lrllrr}
+\hline
+&amp; &amp; \hspace{1in} &amp; &amp; \emph{Chapter} &amp; \emph{Book} \\
+\emph{Created:} &amp; <xsl:value-of select="@dion:created"/>  &amp; &amp; \emph{Lines:} &amp; \numprint{<xsl:value-of select="book:info/dion:stats[@role='section']/@lines"/>} &amp; \numprint{<xsl:value-of select="book:info/dion:stats[@role='book']/@lines"/>} \\
+\emph{Updated:} &amp; <xsl:value-of select="@dion:lastedit"/>  &amp; &amp; \emph{Words:} &amp; \numprint{<xsl:value-of select="book:info/dion:stats[@role='section']/@words"/>} &amp; \numprint{<xsl:value-of select="book:info/dion:stats[@role='book']/@words"/>} \\
+\emph{Status:} &amp; <xsl:value-of select="@dion:status"/> &amp; &amp; \emph{Chars:} &amp; \numprint{<xsl:value-of select="book:info/dion:stats[@role='section']/@chars"/>} &amp; \numprint{<xsl:value-of select="book:info/dion:stats[@role='book']/@chars"/>} \\
+\hline
+\end{tabulary}
+\end{center}
 
-\begin{itemize}
-\item
-\numprint{<xsl:value-of select="book:info/dion:stats[@role='section']/@lines"/>} {} 
-/
-\numprint{<xsl:value-of select="book:info/dion:stats[@role='book']/@lines"/>} {}
-\emph{lines}
 
-\item
-\numprint{<xsl:value-of select="book:info/dion:stats[@role='section']/@words"/>} {} 
-/ 
-\numprint{<xsl:value-of select="book:info/dion:stats[@role='book']/@words"/>} {}
-\emph{words}
 
-\item
-\numprint{<xsl:value-of select="book:info/dion:stats[@role='section']/@chars"/>} {} 
-/
-\numprint{ <xsl:value-of select="book:info/dion:stats[@role='book']/@chars"/>}{}
-\emph{characters}
-\end{itemize}
-\end{minipage}%
-\hfill
-\begin{minipage}{0.45\textwidth}
-\begin{tabular}{p{\textwidth}}
-\large\bfseries Document Status: \normalfont\small 
-\begin{itemize}
-\item\small <xsl:value-of select="@dion:lastedit"/> 
-\item Chapter Number: <xsl:value-of select="book:info/dion:stats[@role='section']/@count"/> 
-\end{itemize}
-\end{tabular}
-\end{minipage}
+<!--
+\begin{tabulary{0.45\textwidth}{lrr}
+
+
+\end{tabulary}
+
+\bfseries Document Status: \normalfont\footnotesize
+
+\begin{tabulary}{0.45\textwidth}{lr}
+Created:  &amp; <xsl:value-of select="@dion:created"/> \\
+Updated: &amp; <xsl:value-of select="@dion:lastedit"/> \\
+Chapter Number: &amp; <xsl:value-of select="book:info/dion:stats[@role='section']/@count"/>  \\
+
+\end{tabulary}
+-->
 
 \end{titlepage}
 
@@ -203,19 +215,33 @@
 </xsl:template>
 
 
+<dion:include src="sections.xml"/>
+
 <!-- Blocks -->
 <xsl:template match="book:info|book:title"/>
 
-<xsl:template match="book:para">
+<xsl:template match="book:para[@role='noindent']">
 
+\noindent <xsl:apply-templates/>
+
+</xsl:template>
+
+
+<xsl:template match="book:para">
 
 <xsl:apply-templates/>
 
+</xsl:template>
+
+<xsl:template match="dion:todo">
+
+\todo{<xsl:apply-templates/>}
 
 </xsl:template>
 
 
 
+<dion:include src="blocks.xml"/>
 
 <!-- Inline -->
 <xsl:template match="book:quote[role='double']">``<xsl:apply-templates/>''</xsl:template>
@@ -225,7 +251,9 @@
 <xsl:template match="book:quote">``<xsl:apply-templates/>''</xsl:template>
 <xsl:template match="book:emphasis">\emph{<xsl:apply-templates/>}</xsl:template>
 
-<xsl:template match="dion:lett">\lettrine{<xsl:value-of select="@rubric"/>}{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="dion:lett"><xsl:choose><xsl:when test="@format">\lettrine[<xsl:value-of select="@format"/>]{}{<xsl:apply-templates/>}</xsl:when><xsl:otherwise>\lettrine{<xsl:value-of select="@rubric"/>}{<xsl:apply-templates/>}</xsl:otherwise></xsl:choose></xsl:template>
 
+
+<dion:include src="inline.xml"/>
 
 </xsl:stylesheet>

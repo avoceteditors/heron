@@ -37,6 +37,7 @@ import pkg_resources
 
 # Local Imports
 import heron.build
+import heron.stats
 
 # Logging Configuration
 import logging
@@ -102,6 +103,8 @@ if __name__ == "__main__":
         help="Sets the configuration file")
     cmd_build.add_argument("-C", "--cache", default=str(build_dir.joinpath("tmp")),
         help="Sets the caching directory")
+    cmd_build.add_argument("-e", "--engine", default="lualatex",
+        help="Specifies the LaTeX build engine")
     cmd_build.add_argument("-f", "--force", action="store_true",
         help="Force source recompile")
     cmd_build.add_argument("-o", "--output", default=str(build_dir),
@@ -111,10 +114,22 @@ if __name__ == "__main__":
         help="Sets the type of document you want to produce")
     cmd_build.add_argument("-s", "--source", default="src",
         help="Sets the source directory")
+    cmd_build.add_argument("-t", "--tex", action="store_true",
+        help="Indicates whether you want to run a LaTeX build to generate PDF's")
     cmd_build.add_argument("-u", "--update", action="store_true",
         help="Sets build to update cache only")
 
     cmd_build.set_defaults(func=heron.build.run)
+
+    ############## STATS COMMAND ################
+    cmd_stats = cmds.add_parser("stats", help="Reports document statistics")
+    cmd_stats.set_defaults(func=heron.stats.run_stats)
+
+    cmd_stats.add_argument("-a", "--all", action="store_true",
+        help="Sets whether to report stats on all books/chapters or just the most recent edit")
+    cmd_stats.add_argument("-C", "--cache", default=str(build_dir.joinpath("tmp")),
+        help="Sets the caching directory")
+
 
     ############## XSLT COMMAND #################
     cmd_xslt = cmds.add_parser("xslt", help="Compiles XSLT files into a single stylesheet")

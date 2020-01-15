@@ -17,4 +17,6 @@
 </div>
 </xsl:template>
 
+<dion:include src="sections.xml"/>
+
 </xsl:stylesheet>
