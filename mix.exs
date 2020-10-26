@@ -7,7 +7,16 @@ defmodule Heron.MixProject do
       version: "0.1.0",
       elixir: "~> 1.9",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      releases: [
+        heron: [
+          include_executables_for: [:unix],
+          applications: [runtime_tools: :permanent],
+          steps: [:assemble]
+        ]
+      ],
+      start_permanent: Mix.env() == :prod,
+      escript: [main_module: Heron.CLI]
     ]
   end
 
@@ -21,8 +30,7 @@ defmodule Heron.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
+      {:ex_doc, "~>0.22", only: :dev, runtime: false},
     ]
   end
 end

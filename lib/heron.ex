@@ -2,17 +2,9 @@ defmodule Heron do
   @moduledoc """
   Documentation for Heron.
   """
+  require Logger
 
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> Heron.hello()
-      :world
-
-  """
-  def hello do
-    :world
+  def server(:start) do
+    System.cmd("whoami",[])
   end
 end
