@@ -16,21 +16,26 @@ defmodule Heron.MixProject do
         ]
       ],
       start_permanent: Mix.env() == :prod,
-      escript: [main_module: Heron.CLI]
+      escript: [main_module: Heron.CLI, emu_args: ["-name heron@localhost"]]
     ]
   end
 
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger, :ecto, :myxql],
+      mod: {Heron.Application, []}
     ]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:ecto_sql, "~>3.5.3"},
       {:ex_doc, "~>0.22", only: :dev, runtime: false},
+      {:git_ops, "~>2.0.1"},
+      {:myxql, "~> 0.4.0"},
+
     ]
   end
 end

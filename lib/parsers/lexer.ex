@@ -1,5 +1,4 @@
 defmodule Heron.Parser.Lexer do
-
   @doc """
   Generic lexer function for converting strings to lists of lexemes.
 
@@ -7,8 +6,7 @@ defmodule Heron.Parser.Lexer do
   lexical analysis on the given string, returning a list of tuples representing lexemes
   for the specific implemtnation of the langauge.
   """
-  @callback lex(String.t) :: List.t
-
+  @callback lex(String.t()) :: List.t()
 
   @doc """
   Pipeline for initial stage of lexical analysis.
@@ -19,11 +17,10 @@ defmodule Heron.Parser.Lexer do
   `concat_graphemes/1` concatenate the list of graphemes where likely significant, 
   (such as double quotes, elipses, and whitespace.
   """
-  @spec lex_str(String.t) :: List.t
-  def lex_str str do
-    String.graphemes(str) |> lex_list |> concat_graphemes 
+  @spec lex_str(String.t()) :: List.t()
+  def lex_str(str) do
+    String.graphemes(str) |> lex_list |> concat_graphemes
   end
-
 
   @doc """
   Performs initial lexical analysis on a list of graphemes.
@@ -35,57 +32,65 @@ defmodule Heron.Parser.Lexer do
   Each tuple takes the form `{type, value}` to be used in further stages of 
   lexical analysis. 
   """
-  @spec lex_list(List.t) :: List.t
-  def lex_list list do
+  @spec lex_list(List.t()) :: List.t()
+  def lex_list(list) do
     case list do
       [head | rest] ->
         case head do
-
           # Whitespace
-          " "  -> [{:ws, 1} | lex_list rest]
-          "	"  -> [{:ws, 3} | lex_list rest]
-
+          " " -> [{:ws, " "} | lex_list(rest)]
+          "\t" -> [{:ws, "   "} | lex_list(rest)]
+          "\n" -> [{:newline, "\n"} | lex_list(rest)]
           # Inline Punctuation
-          "*"  -> [{:punct, :asterisk} | lex_list rest]
-          "`"  -> [{:punct, :tick} | lex_list rest]
-          "'"  -> [{:punct, :quote} | lex_list rest]
-          "\"" -> [{:punct, :qquote} | lex_list rest]
-
+          "*" -> [{:punct, :asterisk} | lex_list(rest)]
+          "`" -> [{:punct, :tick} | lex_list(rest)]
+          "'" -> [{:punct, :quote} | lex_list(rest)]
+          "\"" -> [{:punct, :qquote} | lex_list(rest)]
           # General Punctuation
-          ","  -> [{:punct, :comma} | lex_list rest]
-          "."  -> [{:punct, :period} | lex_list rest]
-          "?"  -> [{:punct, :qmark} | lex_list rest]
-          ":"  -> [{:punct, :colon} | lex_list rest]
-          ";"  -> [{:punct, :semicolon} | lex_list rest]
-          "_"  -> [{:punct, :underscore} | lex_list rest]
-          "<"  -> [{:punct, :oanglebrack} | lex_list rest]
-          ">"  -> [{:punct, :canglebrack} | lex_list rest]
-          "/"  -> [{:punct, :fslash} | lex_list rest]
-          "\\" -> [{:punct, :bslash} | lex_list rest]
-          "|"  -> [{:punct, :pipe} | lex_list rest]
-          "["  -> [{:punct, :obrack} | lex_list rest]
-          "]"  -> [{:punct, :cbrack} | lex_list rest]
-          "{"  -> [{:punct, :obrace} | lex_list rest]
-          "}"  -> [{:pucnt, :cbrace} | lex_list rest]
-          "-"  -> [{:punct, :hyphen} | lex_list rest]
-          "+"  -> [{:punct, :plus} | lex_list rest]
-          "#"  -> [{:punct, :hash} | lex_list rest]
-          "!"  -> [{:punct, :exclam} | lex_list rest]
-          "@"  -> [{:punct, :atsign} | lex_list rest]
-          "$"  -> [{:punct, :dollsign} | lex_list rest]
-          "%"  -> [{:punct, :percent} | lex_list rest]
-          "^"  -> [{:punct, :caret} | lex_list rest]
-          "&"  -> [{:punct, :amp} | lex_list rest]
-          "("  -> [{:punct, :oparen} | lex_list rest]
-          ")"  -> [{:punct, :cparen} | lex_list rest]
-
+          "," -> [{:punct, :comma} | lex_list(rest)]
+          "." -> [{:punct, :period} | lex_list(rest)]
+          "?" -> [{:punct, :qmark} | lex_list(rest)]
+          ":" -> [{:punct, :colon} | lex_list(rest)]
+          ";" -> [{:punct, :semicolon} | lex_list(rest)]
+          "_" -> [{:punct, :underscore} | lex_list(rest)]
+          "<" -> [{:punct, :oanglebrack} | lex_list(rest)]
+          ">" -> [{:punct, :canglebrack} | lex_list(rest)]
+          "/" -> [{:punct, :fslash} | lex_list(rest)]
+          "\\" -> [{:punct, :bslash} | lex_list(rest)]
+          "|" -> [{:punct, :pipe} | lex_list(rest)]
+          "[" -> [{:punct, :obrack} | lex_list(rest)]
+          "]" -> [{:punct, :cbrack} | lex_list(rest)]
+          "{" -> [{:punct, :obrace} | lex_list(rest)]
+          "}" -> [{:pucnt, :cbrace} | lex_list(rest)]
+          "-" -> [{:punct, :hyphen} | lex_list(rest)]
+          "+" -> [{:punct, :plus} | lex_list(rest)]
+          "#" -> [{:punct, :hash} | lex_list(rest)]
+          "!" -> [{:punct, :exclam} | lex_list(rest)]
+          "@" -> [{:punct, :atsign} | lex_list(rest)]
+          "$" -> [{:punct, :dollsign} | lex_list(rest)]
+          "%" -> [{:punct, :percent} | lex_list(rest)]
+          "^" -> [{:punct, :caret} | lex_list(rest)]
+          "&" -> [{:punct, :amp} | lex_list(rest)]
+          "(" -> [{:punct, :oparen} | lex_list(rest)]
+          ")" -> [{:punct, :cparen} | lex_list(rest)]
+          "0" -> [{:num, "0"} | lex_list(rest)]
+          "1" -> [{:num, "1"} | lex_list(rest)]
+          "2" -> [{:num, "2"} | lex_list(rest)]
+          "3" -> [{:num, "3"} | lex_list(rest)]
+          "4" -> [{:num, "4"} | lex_list(rest)]
+          "5" -> [{:num, "5"} | lex_list(rest)]
+          "6" -> [{:num, "6"} | lex_list(rest)]
+          "7" -> [{:num, "7"} | lex_list(rest)]
+          "8" -> [{:num, "8"} | lex_list(rest)]
+          "9" -> [{:num, "9"} | lex_list(rest)]
           # Default
-          _ -> [head | lex_list rest]
+          _ -> [head | lex_list(rest)]
         end
-      [] -> []
+
+      [] ->
+        []
     end
   end
-
 
   @doc """
   Concatenates a list of graphemes into relevant mutli-character punctuation and text. 
@@ -99,53 +104,50 @@ defmodule Heron.Parser.Lexer do
   have significance in later stages of lexical and semantic analyses, such as with double
   backticks or elipses.
   """
-  @spec concat_graphemes(List.t) :: List.t
-  def concat_graphemes list do
+  @spec concat_graphemes(List.t()) :: List.t()
+  def concat_graphemes(list) do
     case list do
-      # Concat Asterisk
-      [{:punct, :asterisk}, {:punct, :asterisk}, {:punct, :asterisk} | rest] -> 
-        [{:punct, :tripasterisk} | concat_graphemes rest]
-
-      [{:punct, :asterisk}, {:punct, :asterisk} | rest] -> 
-        [{:punct, :doubasterisk} | concat_graphemes rest]
-
-      # Concat Ticks
-      [{:punct, :tick}, {:punct, :tick} | rest] ->
-        [{:punct, :dtick} | concat_graphemes rest]
-
-      # Elipsis
-      [{:punct, :period}, {:punct, :period}, {:punct, :period} | rest] ->
-        [{:punct, :elipsis} | concat_graphemes rest]
-
-      # Concat Periods
-      [{:punct, :period}, {:punct, :period} | rest] ->
-        [{:punct, :dperiod} | concat_graphemes rest]
-        
-      # Concat Hyphens
-      [{:punct, :hyphen}, {:punct, :hyphen}, {:punct, :hyphen} | rest] ->
-        [{:punct, :emdash} | concat_graphemes rest]
-      [{:punct, :hyphen}, {:punct, :hyphen} | rest] ->
-        [{:punct, :endash} | concat_graphemes rest]
-
+      #      # Concat Asterisk
+      #      [{:punct, :asterisk}, {:punct, :asterisk}, {:punct, :asterisk} | rest] -> 
+      #        [{:punct, :tripasterisk} | concat_graphemes rest]
+      #
+      #      [{:punct, :asterisk}, {:punct, :asterisk} | rest] -> 
+      #        [{:punct, :doubasterisk} | concat_graphemes rest]
+      #
+      #
+      #      # Elipsis
+      #      [{:punct, :period}, {:punct, :period}, {:punct, :period} | rest] ->
+      #        [{:punct, :elipsis} | concat_graphemes rest]
+      #
+      #      # Concat Periods
+      #      [{:punct, :period}, {:punct, :period} | rest] ->
+      #        [{:punct, :dperiod} | concat_graphemes rest]
+      #        
+      #      # Concat Hyphens
+      #      [{:punct, :hyphen}, {:punct, :hyphen}, {:punct, :hyphen} | rest] ->
+      #        [{:punct, :emdash} | concat_graphemes rest]
+      #      [{:punct, :hyphen}, {:punct, :hyphen} | rest] ->
+      #        [{:punct, :endash} | concat_graphemes rest]
+      #
       # Process Strings
-      [head | rest] -> 
-          case head do
-            {:ws, lvl} -> 
-              case rest do
-                [{:ws, slvl} | remain] -> [{:ws, lvl + slvl} | concat_graphemes remain]
-                _ -> [head | concat_graphemes rest]
-              end
-            [] -> []
-            _ -> 
-              if Kernel.is_tuple(head) do
-                [head | concat_graphemes(rest)]
-              else
-                concat_str("", head, rest)
-              end
-          end
+      [head | rest] ->
+        if Kernel.is_tuple(head) do
+          {type, _} = head
 
-      [] -> []
-      _ -> []
+          if type in [:ws] do
+            [concat_by_type(type, "", head, rest)]
+          else
+            [head | concat_graphemes(rest)]
+          end
+        else
+          concat_str("", head, rest)
+        end
+
+      [] ->
+        []
+
+      _ ->
+        []
     end
   end
 
@@ -160,7 +162,7 @@ defmodule Heron.Parser.Lexer do
   It returns a list of tuples in the `{type, value}` pattern and calls 
   `concat_graphemes/1` on any remaining items in the list.
   """
-  @spec concat_str(String.t, String.t, List.t) :: List.t
+  @spec concat_str(String.t(), String.t(), List.t()) :: List.t()
   def concat_str(text, head, rest) when not Kernel.is_tuple(head) do
     if String.match?(head, ~r{^[[:graph:]]$}) do
       case rest do
@@ -173,6 +175,21 @@ defmodule Heron.Parser.Lexer do
   end
 
   def concat_str(text, head, rest) do
-    [{:text, text}, head | concat_graphemes rest]
+    [{:text, text}, head | concat_graphemes(rest)]
+  end
+
+  def concat_by_type(type, text, head, rest) when type in [:ws] do
+    if Kernel.is_tuple(head) do
+      {head_type, value} = head
+
+      if head_type == type do
+        case rest do
+          [first | remain] -> concat_by_type(head_type, text <> value, first, remain)
+          [] -> [{type, text <> value}]
+        end
+      else
+        [head | concat_graphemes(rest)]
+      end
+    end
   end
 end
