@@ -24,5 +24,4 @@ heron-*.tar
 
 rel
 mix.lock
-heron
 bin
