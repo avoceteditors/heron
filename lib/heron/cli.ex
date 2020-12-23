@@ -6,7 +6,6 @@ defmodule Heron.CLI do
     argv 
     |> parse 
     |> run
-    |> IO.inspect
   end
 
   defp parse(argv) do
@@ -42,12 +41,19 @@ defmodule Heron.CLI do
     System.halt(1)
   end
 
-  defp run({:ok, opts, ["version", args]}) do
-    Heron.Docs.puts(:version, opts[:debug], opts[:verbose])
+  ####################### RUN HERON ############################
+  
+  defp run({:ok, opts, ["help" | args]}) do
+    Heron.Docs.run(:help, args)
+  end
+
+  defp run({:ok, opts, ["version" | args]}) do
+    Heron.Docs.run(:version, opts[:debug], opts[:verbose])
   end
 
   defp run({:ok, opts, [cmd | args]}) do
     Logger.error "Unknown Command: #{cmd}"
+    Heron.Docs.run(:help, [])
   end
 
   defp run({:ok, opts, []}) do
