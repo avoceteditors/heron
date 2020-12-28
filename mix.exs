@@ -23,6 +23,7 @@ defmodule Heron.MixProject do
 
   defp deps do
     [
+      {:cachex, "~> 3.3"}
     ]
   end
   defp aliases do

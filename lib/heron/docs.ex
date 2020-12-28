@@ -76,8 +76,30 @@ defmodule Heron.Docs do
     |> Enum.join("\n")
   end
 
+  ############################ COMMANDS ###########################
+  
+  # Read Command
+  
+  @help_cmd {
+    "help         ",
+    ["Provides usage documentation for the application."]
+  }
+  # Version Command
+  @version_cmd {
+    "version      ",
+    ["Returns the current version of the application."]
+  }
+
+  defp get_commands([]) do
+    [@version_cmd, @help_cmd]
+    |> Enum.map(fn {cmd, docs} ->
+      "#{cmd}   #{Enum.join(docs, "\n      ")}"
+        end)
+    |> Enum.sort
+  end
+
   defp commands(args) do
-    [\nCommands:]
+    ["\nCommands:"]
     ++ get_commands(args)
     |> Enum.join("\n  ")
   end
@@ -93,9 +115,5 @@ defmodule Heron.Docs do
     |> IO.puts
   end
 
-  def run(:help, args) do
-    run(:help, [])
-  end
-
-
+  
 end
