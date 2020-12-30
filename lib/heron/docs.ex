@@ -48,14 +48,13 @@ defmodule Heron.Docs do
   defp get_options do
     [
       "-D, --debug     Enables logging with debugging messages.",
-      "-v, --verbose   Enables logging with verbose messages." 
+      "-v, --verbose   Enables logging with verbose messages." ,
+      "-c, --cache     Sets the cache directory",
+      "-f, --force     Force-reloads cache"
     ]
     |> Enum.sort 
   end
 
-  defp usage do
-
-  end
 
   defp options do
     ["\nOptions:"] 

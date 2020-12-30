@@ -6,16 +6,22 @@ defmodule Heron.CLI do
     argv 
     |> parse 
     |> run
+
+    System.halt(0)
   end
 
   defp parse(argv) do
     case OptionParser.parse(argv,
       switches: [
+        cache: :string,
         debug: :boolean,
+        force: :boolean,
         verbose: :boolean
       ],
       aliases: [
+        c: :cache,
         D: :debug,
+        f: :force,
         v: :verbose
       ]) do
 
@@ -42,6 +48,11 @@ defmodule Heron.CLI do
   end
 
   ####################### RUN HERON ############################
+  defp run({:ok, opts, ["project" | args]}) do
+    Heron.Cache.load_cache(opts[:config], opts[:force])
+
+    Heron.Project.run(args)
+  end
   
   defp run({:ok, opts, ["help" | args]}) do
     Heron.Docs.run(:help, args)
