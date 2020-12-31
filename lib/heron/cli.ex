@@ -51,7 +51,7 @@ defmodule Heron.CLI do
   defp run({:ok, opts, ["project" | args]}) do
     Heron.Cache.load_cache(opts[:config], opts[:force])
 
-    Heron.Project.run(args)
+    Heron.Project.run(opts, args)
   end
   
   defp run({:ok, opts, ["help" | args]}) do
