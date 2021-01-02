@@ -5,7 +5,15 @@ defmodule Heron.Project do
 
   ######## INFORMATION COLLECTION #######
   def info do
-    git_status |> git_worktree 
+    info Path.expand(".")
+  end
+
+  def info(nil) do
+    info Path.expand(".")
+  end
+
+  def info cwd do
+    git_status(cwd) |> git_worktree |> git_struct
   end
 
   def git_struct({current_branch, worktrees}) do
@@ -18,17 +26,17 @@ defmodule Heron.Project do
     }
   end
 
-  def git_status do
-    case System.cmd("git", ["status"], []) do
+  def git_status(cwd) do
+    case System.cmd("git", ["status"], [cd: cwd]) do
       {return, 0} ->
         [_, branch] = Regex.run(~r/^On branch (.*?)\n/, return)
-        {:ok, branch}
-      _ -> {:error, "NONE"}
+        {:ok, branch, cwd}
+      _ -> {:error, "NONE", cwd}
     end
   end
 
-  def git_worktree({:ok, branch}) do
-    {return, 0} = System.cmd("git", ["worktree", "list"], [])
+  def git_worktree({:ok, branch, cwd}) do
+    {return, 0} = System.cmd("git", ["worktree", "list"], [cd: cwd])
 
     wt = Regex.split(~r/\s*\n\s*/, return)
     |> Enum.filter(fn x ->
@@ -42,39 +50,15 @@ defmodule Heron.Project do
     {branch, wt}
   end
 
-  def git_worktree({:error, none}) do
+  def git_worktree({:error, none, cwd}) do
     Logger.warn("Current working directory is not a Git repository")
-    {none, [{Path.expand("."), none}]}
+    {none, [{Path.expand(cwd), none}]}
   end
-
-  ############# ADD PROJECT #################
-
-  def add_project(args, nil) do
-    add_project(args, Path.expand("~/.config/heron"))
-  end
-
-  def add_project([name, src, bld, type], cache) do
-    Logger.info("Adding project to cache")
-    {:ok, projects} = Cachex.get(:heron, :projects)
-    {:ok, true} = Cachex.put(:heron, :projects,
-      Map.put(projects, name, 
-        %Heron.Project{
-          name: name,
-          src: src,
-          bld: bld,
-          type: type}))
-    Cachex.dump(:heron, Path.join(cache, "heron.db"))
-  end
-  
 
   #################### RUN OPERATIONS ################
   def run(opts, []) do
     {:ok, projects} = Cachex.get(:heron, :projects)
     IO.inspect projects
-  end
-
-  def run(opts, ["add" | args]) do
-    add_project(args, opts[:cache])
   end
 
   def run(opts, args) do
