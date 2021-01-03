@@ -1,48 +1,45 @@
 defmodule Heron.Reader do
 
-
-  def expand_files(path) do
-    if File.dir?(path) do
-      {:ok, paths} = File.ls(path)
-      expand_files(path, paths)
-    else
-      [path]
-    end
-  end
-
-  def expand_files(base_path, paths) do
+  def expand(base_path, paths) do
     case paths do
       [path | rest] ->
         name = "#{base_path}/#{path}"
-        if File.dir?(path) do
+        if File.dir?(name) do
           {:ok, contents} = File.ls(name)
-          [expand_files(name, contents) | expand_files(base_path, rest)]
+          expand(name, contents) ++ expand(base_path, rest)
         else
-          [name | expand_files(base_path, rest)]
+          # Collect Metadata
+          {:ok, stat} = File.lstat(name)
+          ext = Path.extname(name)
+          
+          # Return Content
+          [Heron.Source.read(name, stat, ext) | expand(base_path, rest)]
         end
       [] -> []
     end
   end
 
-  def expand(paths) do
-    case paths do
-      [path | rest] ->
-        [expand_files(path) | expand(rest)]
-      [] -> []
+  def expand(src) do
+    if File.dir?(src) do
+      {:ok, contents} = File.ls(src)
+      expand(src, contents)
+    else
+      [src]
     end
   end
 
-  def read_wt(wt, src) do
-    [Path.join(wt.path, src)]
+  def read_wt(branch, wt, src) do
+    source = Path.join(wt.path, src)
     |> expand
     
+    {branch, source}
   end
 
-  def read({branch, worktrees}, src, true) do
+  def read_files({branch, worktrees}, src, true) do
     cur = self()
     worktrees
     |> Enum.map(fn {branch, wt} ->
-      spawn_link fn -> (send cur, {self(), read_wt(wt, src)})
+      spawn_link fn -> (send cur, {self(), read_wt(branch, wt, src)})
       end
     end)
     |> Enum.map(fn pid ->
@@ -51,13 +48,14 @@ defmodule Heron.Reader do
     end)
   end
 
-  def read({branch, worktrees}, src, nil) do
-    [read_wt(Map.get(worktrees, branch), src)]
+  def read_files({branch, worktrees}, src, nil) do
+    [read_wt(branch, Map.get(worktrees, branch), src)]
   end
 
   def run(opts, [src]) do
     Heron.Project.info(opts[:cwd])
-    |> read(src, opts[:all])
+    |> read_files(src, opts[:all])
     |> IO.inspect
+  
   end
 end
