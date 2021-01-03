@@ -1,9 +1,41 @@
 defmodule Heron.Reader do
 
 
+  def expand_files(path) do
+    if File.dir?(path) do
+      {:ok, paths} = File.ls(path)
+      expand_files(path, paths)
+    else
+      [path]
+    end
+  end
+
+  def expand_files(base_path, paths) do
+    case paths do
+      [path | rest] ->
+        name = "#{base_path}/#{path}"
+        if File.dir?(path) do
+          {:ok, contents} = File.ls(name)
+          [expand_files(name, contents) | expand_files(base_path, rest)]
+        else
+          [name | expand_files(base_path, rest)]
+        end
+      [] -> []
+    end
+  end
+
+  def expand(paths) do
+    case paths do
+      [path | rest] ->
+        [expand_files(path) | expand(rest)]
+      [] -> []
+    end
+  end
+
   def read_wt(wt, src) do
-    Path.join(wt.path, src)
-    |> expand_files
+    [Path.join(wt.path, src)]
+    |> expand
+    
   end
 
   def read({branch, worktrees}, src, true) do
