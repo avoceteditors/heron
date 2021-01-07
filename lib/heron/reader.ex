@@ -55,7 +55,5 @@ defmodule Heron.Reader do
   def run(opts, [src]) do
     Heron.Project.info(opts[:cwd])
     |> read_files(src, opts[:all])
-    |> IO.inspect
-  
   end
 end
