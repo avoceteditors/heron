@@ -2,7 +2,8 @@ defmodule Heron.Source do
 
   def read(path, stat, ext) when ext == ".xml" do
     {root, _} = :xmerl_scan.file(path)
-    %Heron.Source.XML{path: path, stat: stat, ext: ext, data: Heron.Source.XML.render(root)}
+    source = %Heron.Source.XML{path: path, stat: stat, ext: ext}
+    Heron.Source.XML.process(source, root)
   end
 
   def read(path, stat, ext) do
