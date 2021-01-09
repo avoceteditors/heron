@@ -47,6 +47,8 @@ defmodule Heron.Docs do
   # Options
   defp get_options do
     [
+      "-a, --all       Reads all worktrees, rather than the current.",
+      "-C, --cwd       Sets the current working directory.",
       "-D, --debug     Enables logging with debugging messages.",
       "-v, --verbose   Enables logging with verbose messages." ,
       "-c, --cache     Sets the cache directory",

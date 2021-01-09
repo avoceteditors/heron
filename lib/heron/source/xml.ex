@@ -51,8 +51,7 @@ defmodule Heron.Source.XML do
     attrs = get_attrs(base_attrs)
     |> Map.new(fn [k,v] -> {k, v} end)
 
-
-    [%Heron.Element{name: name, id: Map.get(attrs, :id, nil), role: Map.get(attrs, :role, nil), attrs: attrs, content:  render(source, base_content)} | render(source, rest)]
+    [%Heron.Element{name: name, id: Map.get(attrs, :id, nil), role: Map.get(attrs, :role, nil), attrs: attrs, content:  render(source, base_content), parents: parents} | render(source, rest)]
 
   end
 

@@ -13,7 +13,7 @@ defmodule Heron.Reader do
           ext = Path.extname(name)
           
           # Return Content
-          [Heron.Source.read(name, stat, ext) | expand(base_path, rest)]
+          [{name, Heron.Source.read(name, stat, ext)} | expand(base_path, rest)]
         end
       [] -> []
     end
@@ -23,8 +23,9 @@ defmodule Heron.Reader do
     if File.dir?(src) do
       {:ok, contents} = File.ls(src)
       expand(src, contents)
+      |> Map.new
     else
-      [src]
+      []
     end
   end
 
@@ -32,7 +33,7 @@ defmodule Heron.Reader do
     source = Path.join(wt.path, src)
     |> expand
     
-    {branch, source}
+    {branch, src, source}
   end
 
   def read_files({branch, worktrees}, src, true) do
@@ -54,6 +55,6 @@ defmodule Heron.Reader do
 
   def run(opts, [src]) do
     Heron.Project.info(opts[:cwd])
-    |> read_files(src, opts[:all])
+    |> read_files(src, opts[:"all-branches"])
   end
 end

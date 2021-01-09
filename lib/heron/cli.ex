@@ -14,6 +14,7 @@ defmodule Heron.CLI do
     case OptionParser.parse(argv,
       switches: [
         all: :boolean,
+        "all-branches": :boolean,
         cache: :string,
         cwd: :string,
         debug: :boolean,
@@ -22,6 +23,7 @@ defmodule Heron.CLI do
       ],
       aliases: [
         a: :all,
+        A: :"all-branches",
         c: :cache,
         C: :cwd,
         D: :debug,
@@ -55,6 +57,11 @@ defmodule Heron.CLI do
   defp run({:ok, opts, ["read" | args]}) do
     Logger.info("Called read operation")
     Heron.Reader.run(opts, args)
+  end
+
+  defp run({:ok, opts, ["build", build_type, src, output]}) do
+    Logger.info("Called build operation")
+    Heron.Builder.run(opts, build_type, Heron.Reader.run(opts, [src]), output)
   end
  
   defp run({:ok, opts, ["project" | args]}) do
